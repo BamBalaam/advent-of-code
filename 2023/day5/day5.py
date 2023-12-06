@@ -56,38 +56,44 @@ def get_destination_from_start_position(start_position, almanac, paths):
 
     return numbers[-1]
 
-with open("day5.txt", 'r') as file:
-    lines = file.readlines()
-    lines = list(map(lambda x: x.strip(), lines))
-    lines = list(filter(lambda x: x != '', lines))
+if __name__ == '__main__':
+    print("Day 5: If You Give A Seed A Fertilizer\n")
 
-seeds_simple = get_seeds(lines[0])
-almanac = get_almanac(lines[1:])
-locations = []
-paths = [
-    'soil', 'fertilizer', 'water', 'light', 'temperature', 'humidity', 'location'
-]
+    for filename in ["day5_example.txt", "day5_input.txt"]:
+        print(f"\nProcessing {filename}")
 
-for seed in seeds_simple:
-    locations.append(get_destination_from_start_position(seed, almanac, paths))
+        with open(filename, 'r') as file:
+            lines = file.readlines()
+            lines = list(map(lambda x: x.strip(), lines))
+            lines = list(filter(lambda x: x != '', lines))
 
-print('Solution Part 1: ' + str(min(locations)))
+        seeds_simple = get_seeds(lines[0])
+        almanac = get_almanac(lines[1:])
+        locations = []
+        paths = [
+            'soil', 'fertilizer', 'water', 'light', 'temperature', 'humidity', 'location'
+        ]
 
-seed_ranges = get_seed_ranges(lines[0])
-reversed_almanac = get_almanac(lines[1:], reverse=True)
-locations = []
-reversed_paths = paths[::-1]
+        for seed in seeds_simple:
+            locations.append(get_destination_from_start_position(seed, almanac, paths))
 
-found = False
-location_number = 1 
+        print('Lowest location number for initial seeds: ' + str(min(locations)))
 
-# This is WAAAAY better than generating all massive ranges of seeds and going through all them...
-# We're going to go through all locations and reverse the path until we find a seed that is in the
-# seed ranges.
-while not found:
-    seed_found = get_destination_from_start_position(location_number, reversed_almanac, reversed_paths)
-    if seed_in_ranges(seed_found, seed_ranges):
-        found = True
-    location_number += 1
+        seed_ranges = get_seed_ranges(lines[0])
+        reversed_almanac = get_almanac(lines[1:], reverse=True)
+        locations = []
+        reversed_paths = paths[::-1]
 
-print('Solution Part 2: ' + str(location_number-1))
+        found = False
+        location_number = 1 
+
+        # This is WAAAAY better than generating all massive ranges of seeds and going through all them...
+        # We're going to go through all locations and reverse the path until we find a seed that is in the
+        # seed ranges.
+        while not found:
+            seed_found = get_destination_from_start_position(location_number, reversed_almanac, reversed_paths)
+            if seed_in_ranges(seed_found, seed_ranges):
+                found = True
+            location_number += 1
+
+        print('Lowest location number for range of seeds: ' + str(location_number-1))

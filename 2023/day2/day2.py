@@ -16,7 +16,7 @@ game_rules = {
     }
 }
 
-def check_game_possible(sets):
+def game_possible(sets):
     for set_elem in sets:
         for rule_to_check in game_rules.values():
             num_cubes = rule_to_check['regex'].search(set_elem)
@@ -27,7 +27,7 @@ def check_game_possible(sets):
                 return False
     return True
 
-def get_fewest_number_of_cubes(sets):
+def get_fewest_number_of_cubes_from_sets(sets):
     fewest_number_of_cubes = {
         'red': None, 'green': None, 'blue': None
     }
@@ -44,24 +44,34 @@ def get_fewest_number_of_cubes(sets):
 
     return(fewest_number_of_cubes)
 
-with open("day2.txt", 'r') as file:
-    lines = file.readlines()
+def process_games(games):
+    possible_game_ids = []
+    power_of_sets = []
 
-sum_possible_game_ids = 0
-sum_power_of_sets = 0
+    for game in games:
+        game_id_text, game_sets_text = game.strip().split(":")
+        game_id = int(re.compile(r'Game (\d+)').search(game_id_text).group(1))
+        sets = game_sets_text.strip().split(";")
 
-for line in lines:
-    game_id_text, game_sets_text = line.strip().split(":")
-    
-    game_id = int(re.compile(r'Game (\d+)').search(game_id_text).group(1))
-    sets = game_sets_text.strip().split(";")
+        if game_possible(sets):
+            possible_game_ids.append(game_id)
 
-    if check_game_possible(sets):
-        sum_possible_game_ids += game_id
+        fewest_cubes = get_fewest_number_of_cubes_from_sets(sets)
+        power_of_set = reduce((lambda x, y: x * y), fewest_cubes.values())
+        power_of_sets.append(power_of_set)
 
-    fewest_cubes = get_fewest_number_of_cubes(sets)
-    power_of_set = reduce((lambda x, y: x * y), fewest_cubes.values())
-    sum_power_of_sets += power_of_set
+    return possible_game_ids, power_of_sets
 
-print(sum_possible_game_ids)
-print(sum_power_of_sets)
+if __name__ == '__main__':
+    print("Day 2: Cube Conundrum")
+
+    for filename in ["day2_example.txt", "day2_input.txt"]:
+        print(f"\nProcessing {filename}")
+
+        with open(filename, 'r') as file:
+            lines = file.readlines()
+
+        possible_game_ids, power_of_sets = process_games(lines)
+
+        print("Sum of possible game IDs: " + str(sum(possible_game_ids)))
+        print("Sum of power of sets with fewest number of cubes: " + str(sum(power_of_sets)))

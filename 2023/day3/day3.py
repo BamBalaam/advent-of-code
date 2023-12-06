@@ -94,10 +94,15 @@ def process_matrix(matrix):
             
     return part_numbers, gears
 
-with open("day3.txt", 'r') as file:
-    lines = file.readlines()
+if __name__ == '__main__':
+    print("Day 3: Gear Ratios")
 
-matrix = get_matrix_from_file_lines(lines)
-part_numbers, gears = process_matrix(matrix)
-print("Sum of part numbers: " + str(reduce((lambda x, y: x + y), part_numbers)))
-print("Sum of gear ratios: " + str(reduce((lambda x, y: x + y), get_gear_ratios(gears))))
+    for filename in ["day3_example.txt", "day3_input.txt"]:
+        print(f"\nProcessing {filename}")
+        with open(filename, 'r') as file:
+            lines = file.readlines()
+
+        matrix = get_matrix_from_file_lines(lines)
+        part_numbers, gears = process_matrix(matrix)
+        print("Sum of part numbers: " + str(reduce((lambda x, y: x + y), part_numbers)))
+        print("Sum of gear ratios: " + str(reduce((lambda x, y: x + y), get_gear_ratios(gears))))
